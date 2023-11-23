@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Profile
 import pdfkit
 from django.http import HttpResponse
 from django.template import loader
-import io
+from django.urls import reverse
 
 # Create your views here.
 
@@ -18,8 +18,10 @@ def accept(request):
         university = request.POST.get('university')
         previous_work = request.POST.get('previous_work')
         skills = request.POST.get('skills')
-        Profile.objects.create(name=name, email=email, phone=phone, summary=summary, degree=degree,
+        
+        profile = Profile.objects.create(name=name, email=email, phone=phone, summary=summary, degree=degree,
                                school=school, university=university, previous_work=previous_work, skills=skills)
+        return redirect(reverse('resume', args=[profile.id]))
 
     return render(request, "pdf/accept.html")
 
